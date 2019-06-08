@@ -183,3 +183,4 @@ before_cache:
 cache:
   directories:
     - $HOME/Library/Caches/Homebrew
+    - /usr/local/Homebrew

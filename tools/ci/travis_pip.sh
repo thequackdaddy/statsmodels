@@ -23,7 +23,23 @@ fi
 # travis osx python support is limited. Use homebrew/pyenv to install python.
 if [ "$TRAVIS_OS_NAME" = "osx" ]; then
 
-  brew update -v && brew upgrade pyenv
+  if [ -d /usr/local/Homebrew/Library/Taps/caskroom/homebrew-cask ]; then
+    rm -rf /usr/local/Homebrew/Library/Taps/caskroom/homebrew-cask
+  fi
+
+  cd /usr/local/Homebrew
+
+  find . -name .git -type d -prune | while read d; do
+    cd $d/..;
+    git status;
+    git pull;
+    git clean -xdf;
+    cd $OLDPWD;
+  done
+
+  cd "$SRCDIR"
+
+  brew update && brew upgrade pyenv
 
   eval "$(pyenv init -)"
 
