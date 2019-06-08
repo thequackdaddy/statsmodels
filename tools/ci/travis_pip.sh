@@ -32,7 +32,7 @@ if [ "$TRAVIS_OS_NAME" = "osx" ]; then
   find . -name .git -type d -prune | while read d; do
     cd $d/..;
     git status;
-    git pull > /dev/null;
+    git pull &>/dev/null;
     git clean -xdf;
     cd $OLDPWD;
   done
