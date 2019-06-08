@@ -23,7 +23,7 @@ fi
 # travis osx python support is limited. Use homebrew/pyenv to install python.
 if [ "$TRAVIS_OS_NAME" = "osx" ]; then
 
-  brew update && brew upgrade pyenv
+  brew update -v && brew upgrade pyenv
 
   eval "$(pyenv init -)"
 
