@@ -39,7 +39,7 @@ if [ "$TRAVIS_OS_NAME" = "osx" ]; then
 
   cd "$SRCDIR"
 
-  brew update && brew upgrade pyenv
+  brew update --merge && brew upgrade pyenv
 
   eval "$(pyenv init -)"
 

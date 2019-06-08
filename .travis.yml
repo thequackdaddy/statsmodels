@@ -178,7 +178,14 @@ after_success:
   - if [ ${COVERAGE} = true ]; then codecov; fi
 
 before_cache:
-  - brew cleanup
+  - |
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      brew cleanup;
+      if [ -d /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask ]; then
+        rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask
+      fi;
+    fi;
+
 
 cache:
   directories:
