@@ -105,6 +105,10 @@ matrix:
         - BUILD_INIT=tools/ci/travis_pip.sh
     - os: osx
       language: generic
+      cache:
+        directories:
+          - $HOME/Library/Caches/Homebrew
+          - /usr/local/Homebrew
       env:
         - PYTHON=3.7
 
@@ -126,6 +130,10 @@ matrix:
         - BUILD_INIT=tools/ci/travis_pip.sh
     - os: osx
       language: generic
+      cache:
+        directories:
+          - $HOME/Library/Caches/Homebrew
+          - /usr/local/Homebrew
       env:
         - PYTHON=3.7
 
