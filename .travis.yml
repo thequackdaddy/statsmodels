@@ -159,8 +159,6 @@ before_install:
   # Setup mac cache-ing,
   - |
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-      export XDIST_OPTS="-n 2"
-
       cd /usr/local/Homebrew
 
       find . -name .git -type d -prune | while read d; do
@@ -174,8 +172,6 @@ before_install:
 
       brew update --merge
       brew install ccache
-    else
-      export XDIST_OPTS=""
     fi
   # Source recipe to install packages
   - source $BUILD_INIT
@@ -183,6 +179,7 @@ before_install:
   - |
     if [ ${COVERAGE} = true ]; then
         pip install codecov coverage coveralls pytest-cov
+        export XDIST_OPTS="-n 2"
         export COVERAGE_OPTS="--cov=statsmodels --cov-report="
         echo "Cython coverage:" ${SM_CYTHON_COVERAGE}
     else
@@ -199,6 +196,7 @@ install:
       export PATH="/usr/local/opt/ccache/libexec:$PATH"
     else
       export PATH="/usr/lib/ccache:$PATH"
+      export XDIST_OPTS=""
     fi
   # Need to clear the ccache? Try something like this:
   # - ccache -C || true
