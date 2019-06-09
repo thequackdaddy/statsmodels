@@ -27,6 +27,7 @@ if [ "$TRAVIS_OS_NAME" = "osx" ]; then
   eval "$(pyenv init -)"
 
   PATH="/usr/local/opt/ccache/libexec:$PATH" pyenv install "$PYTHON"
+  ccache -s || true
   pyenv shell "$PYTHON"
 fi
 
