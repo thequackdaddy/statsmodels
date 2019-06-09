@@ -29,6 +29,12 @@ env:
     - # Doctr deploy key for statsmodels/statsmodels.github.io
     - secure: "AzwB23FWdilHKVcEJnj57AsoY5yKTWT8cQKzsH2ih9i08wIXvZXP/Ui8XRDygV9tDKfqGVltC7HpBBDE3C4ngeMlis4uuKWlkp0O1757YQe+OdDnimuDZhrh3ILEk7xW3ab5YizjLeyv3iiBW7cNS5z8W3Yu8HeJPkr6Ck30gAA="
     - SM_CYTHON_COVERAGE=false # Run takes > 1 hour and so not feasible
+    - USE_CCACHE=1
+    - CCACHE_SLOPPINESS=pch_defines,time_macros
+    - CCACHE_COMPRESS=1
+    - CCACHE_MAXSIZE=250M
+    - BACKEND=c,cpp
+    - PATH="/usr/lib/ccache:$PATH"
 
 matrix:
   fast_finish: true
@@ -152,7 +158,10 @@ before_install:
 
 # Install packages
 install:
+  # Need to clear the ccache? Try something like this:
+  # - ccache -C || true
   - python setup.py develop
+  - ccache -s || true
 
 before_script:
   - if [ ${DOCBUILD} = true ]; then source tools/ci/docbuild_install.sh; fi;
@@ -165,7 +174,7 @@ script:
   # Run tests
   - |
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-        export XDIST_OPTS="-n2"
+        export XDIST_OPTS="-n 2"
     else
         export XDIST_OPTS=""
     fi
@@ -188,6 +197,9 @@ before_cache:
 
 
 cache:
+  apt: true
   directories:
     - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
+    - $HOME/.cache/pip
+    - $HOME/.ccache
