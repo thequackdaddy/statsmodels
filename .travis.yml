@@ -187,7 +187,6 @@ before_install:
   - |
     if [ ${COVERAGE} = true ]; then
         pip install codecov coverage coveralls pytest-cov
-        export XDIST_OPTS="-n 2"
         export COVERAGE_OPTS="--cov=statsmodels --cov-report="
         echo "Cython coverage:" ${SM_CYTHON_COVERAGE}
     else
@@ -201,6 +200,7 @@ install:
   - |
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
       pip install pytest-xdist
+      export XDIST_OPTS="-n 2"
       export PATH="/usr/local/opt/ccache/libexec:$PATH"
     else
       export PATH="/usr/lib/ccache:$PATH"
