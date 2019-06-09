@@ -34,7 +34,6 @@ env:
     - CCACHE_COMPRESS=1
     - CCACHE_MAXSIZE=250M
     - BACKEND=c,cpp
-    - PATH="/usr/lib/ccache:$PATH"
 
 matrix:
   fast_finish: true
@@ -113,6 +112,10 @@ matrix:
         - BUILD_INIT=tools/ci/travis_pip.sh
     - os: osx
       language: generic
+      cache:
+        directories:
+          - $HOME/Library/Caches/Homebrew
+          - /usr/local/Homebrew
       env:
         - PYTHON=3.6.6
         - NUMPY=1.14
@@ -160,6 +163,7 @@ before_install:
 install:
   # Need to clear the ccache? Try something like this:
   # - ccache -C || true
+  - PATH="/usr/lib/ccache:$PATH"
   - python setup.py develop
   - ccache -s || true
 
@@ -199,7 +203,5 @@ before_cache:
 cache:
   apt: true
   directories:
-    - $HOME/Library/Caches/Homebrew
-    - /usr/local/Homebrew
     - $HOME/.cache/pip
     - $HOME/.ccache
