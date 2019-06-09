@@ -148,10 +148,31 @@ before_install:
   # Avoid noise from matplotlib
   - mkdir -p $HOME/.config/matplotlib
   - SRCDIR=$PWD
+  # Setup mac cache-ing,
+  - |
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      pip install pytest-xdist
+      export XDIST_OPTS="-n 2"
+
+      cd /usr/local/Homebrew
+
+      find . -name .git -type d -prune | while read d; do
+        cd $d/..
+        git pull &>/dev/null
+        git clean -xdf
+        cd $OLDPWD
+      done
+
+      cd "$SRCDIR"
+
+      brew update --merge
+      brew install ccache
+    else
+      export XDIST_OPTS=""
+    fi
   # Source recipe to install packages
   - source $BUILD_INIT
   - pip install pytest pip pytest-randomly nose
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then pip install pytest-xdist; fi;
   - |
     if [ ${COVERAGE} = true ]; then
         pip install codecov coverage coveralls pytest-cov
@@ -165,9 +186,14 @@ before_install:
 
 # Install packages
 install:
+  - |
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      export PATH="/usr/local/opt/ccache/libexec:$PATH"
+    else
+      export PATH="/usr/lib/ccache:$PATH"
+    fi
   # Need to clear the ccache? Try something like this:
   # - ccache -C || true
-  - PATH="/usr/lib/ccache:$PATH"
   - python setup.py develop
   - ccache -s || true
 
@@ -180,12 +206,6 @@ script:
   # docbuild and exit, if required
   - if [ ${DOCBUILD} = true ]; then cd ${SRCDIR}/docs; source ${SRCDIR}/tools/ci/docbuild.sh; exit 0; fi;
   # Run tests
-  - |
-    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-        export XDIST_OPTS="-n 2"
-    else
-        export XDIST_OPTS=""
-    fi
   - echo pytest -r a ${COVERAGE_OPTS} statsmodels --skip-examples ${XDIST_OPTS}
   - pytest -r a ${COVERAGE_OPTS} statsmodels --skip-examples ${XDIST_OPTS}
   - ./lint.sh
