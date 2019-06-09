@@ -159,7 +159,6 @@ before_install:
   # Setup mac cache-ing,
   - |
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-      pip install pytest-xdist
       export XDIST_OPTS="-n 2"
 
       cd /usr/local/Homebrew
@@ -196,6 +195,7 @@ before_install:
 install:
   - |
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      pip install pytest-xdist
       export PATH="/usr/local/opt/ccache/libexec:$PATH"
     else
       export PATH="/usr/lib/ccache:$PATH"
