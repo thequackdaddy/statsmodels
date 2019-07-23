@@ -1289,14 +1289,14 @@ class LikelihoodModelResults(Results):
             bse_ = np.sqrt(np.diag(self.cov_params()))
         return bse_
 
-    @cached_value
+    @cache_readonly
     def tvalues(self):
         """
         Return the t-statistic for a given parameter estimate.
         """
         return self.params / self.bse
 
-    @cached_value
+    @cache_readonly
     def pvalues(self):
         """The two-tailed p values for the t-stats of the params."""
         if self.use_t:
